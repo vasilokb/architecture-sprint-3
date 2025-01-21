@@ -215,24 +215,24 @@ Rel(sensors, heatingSystem, "Передача данных о температу
 **Диаграмма контейнеров (Containers)**
 
 ```plantuml
-@startuml
-
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/main/C4.puml
+!include https://raw.githubusercontent.com/vasilokb/plantUML/refs/heads/main/C4.puml
 
 Person(user, "Пользователь", "Управляет устройствами в доме")
 Person(admin, "Администратор", "Администратор, управляющий системой")
+System(apiGateway, "API Gateway", "Маршрутизация запросов и интеграция с микросервисами")
+Container(authService, "Auth Service", "Обеспечивает аутентификацию и авторизацию пользователей")
+ContainerDb(userDb, "PostgreSQL", "Хранение данных пользователей")
 
-Boundary(apiGateway, "API Gateway") {
-System(authService, "Auth Service", "Обеспечивает аутентификацию и авторизацию пользователей")
 System(deviceService, "Device Management Service", "Управление устройствами и сценариями")
-System(telemetryService, "Telemetry Service", "Сбор и анализ данных от датчиков")
-System(notificationService, "Notification Service", "Отправка уведомлений пользователям")
-}
-
-SystemDb(userDb, "PostgreSQL", "Хранение данных пользователей")
 SystemDb(deviceDb, "PostgreSQL", "Хранение данных устройств")
-SystemQueue(eventBus, "Kafka", "Обмен событиями между микросервисами")
+
+System(telemetryService, "Telemetry Service", "Сбор и анализ данных от датчиков")
 SystemDb(telemetryDb, "TimescaleDB", "Хранение телеметрических данных")
+System(notificationService, "Notification Service", "Отправка уведомлений пользователям")
+
+System(integrationService, "Integration Service", "Интеграция с устройствами через протоколы ZigBee, Z-Wave, MQTT и др.")
+SystemDb(integrationDb, "PostgreSQL", "Хранение данных о конфигурации устройств и протоколов")
+SystemQueue(eventBus, "Kafka", "Обмен событиями между микросервисами")
 
 System_Ext(sensors, "Датчики", "Передают данные о температуре и состоянии")
 System_Ext(devices, "Устройства", "Устройства умного дома (освещение, отопление, ворота)")
@@ -249,8 +249,10 @@ Rel(telemetryService, telemetryDb, "Хранение телеметрическ�
 Rel(telemetryService, sensors, "Сбор данных с датчиков")
 Rel(eventBus, notificationService, "Уведомления о событиях")
 Rel(notificationService, userDb, "Чтение пользовательских настроек уведомлений")
-
-@enduml
+Rel(apiGateway, integrationService, "Запросы на управление интеграцией устройств")
+Rel(integrationService, integrationDb, "Чтение и запись данных конфигурации")
+Rel(integrationService, devices, "Обмен данными через протоколы (ZigBee, Z-Wave и др.)")
+Rel(integrationService, eventBus, "Публикация событий интеграции")
 ```
 
 **Диаграмма компонентов (Components)**
