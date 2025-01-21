@@ -216,7 +216,6 @@ Rel(sensors, heatingSystem, "Передача данных о температу
 
 ```plantuml
 !include https://raw.githubusercontent.com/vasilokb/plantUML/refs/heads/main/C4.puml
-
 Person(user, "Пользователь", "Управляет устройствами в доме")
 Person(admin, "Администратор", "Администратор, управляющий системой")
 System(apiGateway, "API Gateway", "Маршрутизация запросов и интеграция с микросервисами")
