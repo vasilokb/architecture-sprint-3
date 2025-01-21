@@ -263,10 +263,75 @@ Rel(integrationService, eventBus, "Публикация событий инте�
 ```
 
 **Диаграмма компонентов (Components)**
-
+***Auth Service
 ```plantuml
+@startuml
+!include https://raw.githubusercontent.com/vasilokb/plantUML/refs/heads/main/C4.puml
+Boundary(authService, "Auth Service") {
+Component(authApi, "API", "REST API", "Принимает запросы на авторизацию")
+Component(tokenManager, "Token Manager", "Компонент", "Генерация и проверка токенов")
+Component(userRepo, "User Repository", "Компонент", "Доступ к данным пользователей")
+}
+
+SystemDb(userDb, "PostgreSQL", "Хранение данных пользователей")
+Rel(authApi, tokenManager, "Генерация и проверка токенов")
+Rel(tokenManager, userRepo, "Запросы к данным пользователей")
+Rel(userRepo, userDb, "Чтение и запись данных пользователей")
+
+@enduml
 
 ```
+***Device Management Service
+```plantuml
+@startuml
+
+!include https://raw.githubusercontent.com/vasilokb/plantUML/refs/heads/main/C4.puml
+
+Boundary(deviceService, "Device Management Service") {
+Component(deviceApi, "API", "REST API", "Принимает запросы на управление устройствами")
+Component(stateManager, "State Manager", "Компонент", "Отслеживание и управление состоянием устройств")
+Component(deviceRepo, "Device Repository", "Компонент", "Доступ к данным устройств")
+}
+
+SystemDb(deviceDb, "PostgreSQL", "Хранение данных устройств")
+SystemQueue(eventBus, "Kafka", "Обмен событиями устройств")
+
+Rel(deviceApi, stateManager, "Передача команд управления")
+Rel(stateManager, deviceRepo, "Чтение данных устройств")
+Rel(deviceRepo, deviceDb, "Чтение и запись данных устройств")
+Rel(stateManager, eventBus, "Публикация событий устройств")
+
+@enduml
+```
+
+***Integration Service
+```plantuml
+@startuml
+
+!include https://raw.githubusercontent.com/vasilokb/plantUML/refs/heads/main/C4.puml
+
+Boundary(integrationService, "Integration Service") {
+Component(integrationApi, "API", "REST API", "Принимает запросы на интеграцию устройств")
+Component(protocolManager, "Protocol Manager", "Компонент", "Управляет протоколами ZigBee, Z-Wave, MQTT и др.")
+Component(configRepo, "Config Repository", "Компонент", "Доступ к данным конфигурации устройств")
+}
+
+SystemDb(integrationDb, "PostgreSQL", "Хранение данных о конфигурации устройств и протоколов")
+System_Ext(devices, "Устройства", "Устройства умного дома")
+SystemQueue(eventBus, "Kafka", "Обмен событиями интеграции")
+
+Rel(integrationApi, protocolManager, "Запросы на управление протоколами")
+Rel(protocolManager, configRepo, "Чтение и запись данных конфигурации")
+Rel(configRepo, integrationDb, "Хранение данных конфигурации")
+Rel(protocolManager, devices, "Обмен данными с устройствами через протоколы")
+Rel(protocolManager, eventBus, "Публикация событий интеграции")
+
+@enduml
+
+```
+
+
+
 
 **Диаграмма кода (Code)**
 
