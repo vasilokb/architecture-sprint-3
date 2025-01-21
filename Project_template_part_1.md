@@ -215,24 +215,31 @@ Rel(sensors, heatingSystem, "Передача данных о температу
 **Диаграмма контейнеров (Containers)**
 
 ```plantuml
+@startuml
 !include https://raw.githubusercontent.com/vasilokb/plantUML/refs/heads/main/C4.puml
 Person(user, "Пользователь", "Управляет устройствами в доме")
 Person(admin, "Администратор", "Администратор, управляющий системой")
-System(apiGateway, "API Gateway", "Маршрутизация запросов и интеграция с микросервисами")
+Boundary(sys, "SMART HOME") {
+Container(apiGateway, "API Gateway", "Маршрутизация запросов и интеграция с микросервисами")
+Boundary(auth, "Auth Service") {
 Container(authService, "Auth Service", "Обеспечивает аутентификацию и авторизацию пользователей")
 ContainerDb(userDb, "PostgreSQL", "Хранение данных пользователей")
-
-System(deviceService, "Device Management Service", "Управление устройствами и сценариями")
-SystemDb(deviceDb, "PostgreSQL", "Хранение данных устройств")
-
-System(telemetryService, "Telemetry Service", "Сбор и анализ данных от датчиков")
+}
+Boundary(device, "Device Management Service") {
+    System(deviceService, "Device Management Service", "Управление устройствами и сценариями")
+    SystemDb(deviceDb, "PostgreSQL", "Хранение данных устройств")
+}
+Boundary(telemetry, "Telemetry Service") {
+Container(telemetryService, "Telemetry Service", "Сбор и анализ данных от датчиков")
 SystemDb(telemetryDb, "TimescaleDB", "Хранение телеметрических данных")
+}
 System(notificationService, "Notification Service", "Отправка уведомлений пользователям")
-
+Boundary(integration, "Integration Service") {
 System(integrationService, "Integration Service", "Интеграция с устройствами через протоколы ZigBee, Z-Wave, MQTT и др.")
 SystemDb(integrationDb, "PostgreSQL", "Хранение данных о конфигурации устройств и протоколов")
+}
 SystemQueue(eventBus, "Kafka", "Обмен событиями между микросервисами")
-
+}
 System_Ext(sensors, "Датчики", "Передают данные о температуре и состоянии")
 System_Ext(devices, "Устройства", "Устройства умного дома (освещение, отопление, ворота)")
 
@@ -252,6 +259,7 @@ Rel(apiGateway, integrationService, "Запросы на управление и
 Rel(integrationService, integrationDb, "Чтение и запись данных конфигурации")
 Rel(integrationService, devices, "Обмен данными через протоколы (ZigBee, Z-Wave и др.)")
 Rel(integrationService, eventBus, "Публикация событий интеграции")
+@enduml
 ```
 
 **Диаграмма компонентов (Components)**
