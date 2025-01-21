@@ -307,9 +307,7 @@ Rel(stateManager, eventBus, "Публикация событий устройс�
 ***Integration Service
 ```plantuml
 @startuml
-
 !include https://raw.githubusercontent.com/vasilokb/plantUML/refs/heads/main/C4.puml
-
 Boundary(integrationService, "Integration Service") {
 Component(integrationApi, "API", "REST API", "Принимает запросы на интеграцию устройств")
 Component(protocolManager, "Protocol Manager", "Компонент", "Управляет протоколами ZigBee, Z-Wave, MQTT и др.")
@@ -330,7 +328,30 @@ Rel(protocolManager, eventBus, "Публикация событий интегр
 
 ```
 
+***Telemetry Service
+```plantuml
+@startuml
+!include https://raw.githubusercontent.com/vasilokb/plantUML/refs/heads/main/C4.puml
+Boundary(telemetryService, "Telemetry Service") {
+  Component(telemetryApi, "Telemetry API", "REST API", "Принимает запросы на доступ к телеметрическим данным")
+  Component(dataCollector, "Data Collector", "Компонент", "Снимает данные с датчиков через брокер сообщений и поддерживаемые протоколы")
+  Component(dataAnalyzer, "Data Analyzer", "Компонент", "Обрабатывает и анализирует поступающие данные")
+  Component(dataRepository, "Data Repository", "Компонент", "Управляет хранилищем телеметрических данных")
+}
 
+SystemDb(telemetryDb, "TimescaleDB", "Хранение телеметрических данных")
+SystemQueue(eventBus, "Kafka", "Обмен событиями между микросервисами")
+System_Ext(sensors, "Датчики", "Датчики умного дома")
+
+Rel(telemetryApi, dataCollector, "Запросы на сбор данных")
+Rel(dataCollector, sensors, "Сбор данных через ZigBee, Z-Wave, MQTT")
+Rel(dataCollector, dataAnalyzer, "Передача собранных данных")
+Rel(dataAnalyzer, dataRepository, "Сохранение обработанных данных")
+Rel(dataRepository, telemetryDb, "Хранение данных")
+Rel(dataAnalyzer, eventBus, "Публикация событий для других сервисов")
+
+@enduml
+```
 
 
 **Диаграмма кода (Code)**
