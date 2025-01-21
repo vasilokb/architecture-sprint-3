@@ -209,4 +209,61 @@ Rel(sensors, heatingSystem, "Передача данных о температу
 @endwbs
 ```
 
+# Задание 2. Проектирование микросервисной архитектуры
+
+
+**Диаграмма контейнеров (Containers)**
+
+```plantuml
+@startuml
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/main/C4.puml
+
+Person(user, "Пользователь", "Управляет устройствами в доме")
+Person(admin, "Администратор", "Администратор, управляющий системой")
+
+Boundary(apiGateway, "API Gateway") {
+System(authService, "Auth Service", "Обеспечивает аутентификацию и авторизацию пользователей")
+System(deviceService, "Device Management Service", "Управление устройствами и сценариями")
+System(telemetryService, "Telemetry Service", "Сбор и анализ данных от датчиков")
+System(notificationService, "Notification Service", "Отправка уведомлений пользователям")
+}
+
+SystemDb(userDb, "PostgreSQL", "Хранение данных пользователей")
+SystemDb(deviceDb, "PostgreSQL", "Хранение данных устройств")
+SystemQueue(eventBus, "Kafka", "Обмен событиями между микросервисами")
+SystemDb(telemetryDb, "TimescaleDB", "Хранение телеметрических данных")
+
+System_Ext(sensors, "Датчики", "Передают данные о температуре и состоянии")
+System_Ext(devices, "Устройства", "Устройства умного дома (освещение, отопление, ворота)")
+
+Rel(user, apiGateway, "Запросы на управление устройствами")
+Rel(admin, apiGateway, "Настройка системы")
+Rel(apiGateway, authService, "Запросы на авторизацию")
+Rel(authService, userDb, "Чтение и запись данных")
+Rel(apiGateway, deviceService, "Управление устройствами и сценариями")
+Rel(deviceService, deviceDb, "Чтение и запись данных об устройствах")
+Rel(deviceService, eventBus, "Публикация событий устройств")
+Rel(apiGateway, telemetryService, "Сбор и предоставление телеметрических данных")
+Rel(telemetryService, telemetryDb, "Хранение телеметрических данных")
+Rel(telemetryService, sensors, "Сбор данных с датчиков")
+Rel(eventBus, notificationService, "Уведомления о событиях")
+Rel(notificationService, userDb, "Чтение пользовательских настроек уведомлений")
+
+@enduml
+```
+
+**Диаграмма компонентов (Components)**
+
+```plantuml
+
+```
+
+**Диаграмма кода (Code)**
+
+```plantuml
+
+```
+
+
 
