@@ -402,6 +402,153 @@ ProtocolManager -> MQTTAdapter : взаимодействует с
 @enduml
 
 ```
+# Задание 3. Разработка ER-диаграммы
 
+## Сущности и их атрибуты
+
+### Пользователь (User)
+- **id**: UUID [PK] — Уникальный идентификатор пользователя.
+- **email**: String [unique] — Email пользователя.
+- **password_hash**: String — Хеш пароля.
+- **name**: String — Имя пользователя.
+- **role**: String — Роль пользователя (например, admin, user).
+- **created_at**: DateTime — Дата и время создания записи.
+
+### Дом (House)
+- **id**: UUID [PK] — Уникальный идентификатор дома.
+- **user_id**: UUID [FK] — Внешний ключ на пользователя.
+- **address**: String — Адрес дома.
+- **name**: String — Название дома.
+- **created_at**: DateTime — Дата и время создания записи.
+
+### Устройство (Device)
+- **id**: UUID [PK] — Уникальный идентификатор устройства.
+- **house_id**: UUID [FK] — Внешний ключ на дом.
+- **type_id**: UUID [FK] — Внешний ключ на тип устройства.
+- **module_id**: UUID [FK] — Внешний ключ на модуль.
+- **serial_number**: String [unique] — Серийный номер устройства.
+- **status**: String — Состояние устройства (включено/выключено).
+- **name**: String — Название устройства.
+- **created_at**: DateTime — Дата и время создания записи.
+
+### Тип устройства (DeviceType)
+- **id**: UUID [PK] — Уникальный идентификатор типа устройства.
+- **name**: String — Название типа устройства.
+- **category**: String — Категория устройства (например, освещение, отопление).
+- **supported_protocols**: String — Поддерживаемые протоколы.
+- **created_at**: DateTime — Дата и время создания записи.
+
+### Модуль (Module)
+- **id**: UUID [PK] — Уникальный идентификатор модуля.
+- **name**: String — Название модуля.
+- **protocol**: String — Используемый протокол (например, ZigBee, Z-Wave).
+- **configuration**: JSON — Конфигурация модуля.
+- **created_at**: DateTime — Дата и время создания записи.
+
+### Телеметрия (TelemetryData)
+- **id**: UUID [PK] — Уникальный идентификатор записи телеметрии.
+- **device_id**: UUID [FK] — Внешний ключ на устройство.
+- **timestamp**: DateTime — Время записи данных.
+- **sensor_type**: String — Тип датчика (например, температура, влажность).
+- **value**: Float — Значение телеметрии.
+- **unit**: String — Единица измерения.
+
+### Уведомление (Notification)
+- **id**: UUID [PK] — Уникальный идентификатор уведомления.
+- **user_id**: UUID [FK] — Внешний ключ на пользователя.
+- **type**: String — Тип уведомления (например, push, email).
+- **message**: String — Текст уведомления.
+- **status**: String — Статус уведомления (например, отправлено, доставлено).
+- **created_at**: DateTime — Дата и время создания записи.
+
+---
+
+## Связи между сущностями
+
+- **Пользователь — Дом**: Один пользователь может иметь несколько домов (связь один-ко-многим).
+- **Дом — Устройство**: Один дом содержит множество устройств (связь один-ко-многим).
+- **Устройство — Тип устройства**: Каждое устройство связано с одним типом (связь многие-к-одному).
+- **Устройство — Модуль**: Устройство использует модуль для подключения (связь многие-к-одному).
+- **Устройство — Телеметрия**: Устройство генерирует множество записей телеметрии (связь один-ко-многим).
+- **Пользователь — Уведомление**: Один пользователь получает множество уведомлений (связь один-ко-многим).
+
+---
+
+## Диаграмма в PlantUML
+
+```plantuml
+@startuml
+
+entity "User" as user {
+  id : UUID [PK]
+  email : String [unique]
+  password_hash : String
+  name : String
+  role : String
+  created_at : DateTime
+}
+
+entity "House" as house {
+  id : UUID [PK]
+  user_id : UUID [FK]
+  address : String
+  name : String
+  created_at : DateTime
+}
+
+entity "Device" as device {
+  id : UUID [PK]
+  house_id : UUID [FK]
+  type_id : UUID [FK]
+  module_id : UUID [FK]
+  serial_number : String [unique]
+  status : String
+  name : String
+  created_at : DateTime
+}
+
+entity "DeviceType" as device_type {
+  id : UUID [PK]
+  name : String
+  category : String
+  supported_protocols : String
+  created_at : DateTime
+}
+
+entity "Module" as module {
+  id : UUID [PK]
+  name : String
+  protocol : String
+  configuration : JSON
+  created_at : DateTime
+}
+
+entity "TelemetryData" as telemetry {
+  id : UUID [PK]
+  device_id : UUID [FK]
+  timestamp : DateTime
+  sensor_type : String
+  value : Float
+  unit : String
+}
+
+entity "Notification" as notification {
+  id : UUID [PK]
+  user_id : UUID [FK]
+  type : String
+  message : String
+  status : String
+  created_at : DateTime
+}
+
+user ||--o{ house : "владеет"
+house ||--o{ device : "содержит"
+device ||--|| device_type : "это тип"
+device ||--|| module : "использует"
+device ||--o{ telemetry : "генерирует"
+user ||--o{ notification : "получает"
+
+@enduml
+```
 
 
