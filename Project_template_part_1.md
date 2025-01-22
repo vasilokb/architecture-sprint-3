@@ -358,23 +358,49 @@ Rel(dataAnalyzer, eventBus, "Публикация аналитики и собы
 ***Integration Service***
 ```plantuml
 @startuml
-class IntegrationApi { +handleRequest(request: Request): Response }
 
-class ProtocolManager { +processCommand(deviceId: String, command: Command): Result +subscribeToDeviceUpdates(protocol: String): void }
+class IntegrationApi {
+  +handleRequest(request: Request): Response
+}
 
-class ConfigRepository { +getDeviceConfig(deviceId: String): DeviceConfig +saveDeviceConfig(config: DeviceConfig): void }
+class ProtocolManager {
+  +processCommand(deviceId: String, command: Command): Result
+  +subscribeToDeviceUpdates(protocol: String): void
+}
 
-class KafkaPublisher { +publishEvent(topic: String, event: Event): void }
+class ConfigRepository {
+  +getDeviceConfig(deviceId: String): DeviceConfig
+  +saveDeviceConfig(config: DeviceConfig): void
+}
 
-class ZigBeeAdapter { +sendCommand(deviceId: String, command: Command): Result +receiveUpdates(): Event }
+class KafkaPublisher {
+  +publishEvent(topic: String, event: Event): void
+}
 
-class ZWaveAdapter { +sendCommand(deviceId: String, command: Command): Result +receiveUpdates(): Event }
+class ZigBeeAdapter {
+  +sendCommand(deviceId: String, command: Command): Result
+  +receiveUpdates(): Event
+}
 
-class MQTTAdapter { +sendCommand(deviceId: String, command: Command): Result +receiveUpdates(): Event }
+class ZWaveAdapter {
+  +sendCommand(deviceId: String, command: Command): Result
+  +receiveUpdates(): Event
+}
 
-IntegrationApi --> ProtocolManager : uses ProtocolManager --> ConfigRepository : fetches config from ProtocolManager --> KafkaPublisher : publishes events via ProtocolManager --> ZigBeeAdapter : interacts with ProtocolManager --> ZWaveAdapter : interacts with ProtocolManager --> MQTTAdapter : interacts with
+class MQTTAdapter {
+  +sendCommand(deviceId: String, command: Command): Result
+  +receiveUpdates(): Event
+}
+
+IntegrationApi --> ProtocolManager : использует
+ProtocolManager --> ConfigRepository : получает конфигурацию из
+ProtocolManager --> KafkaPublisher : публикует события через
+ProtocolManager --> ZigBeeAdapter : взаимодействует с
+ProtocolManager --> ZWaveAdapter : взаимодействует с
+ProtocolManager -> MQTTAdapter : взаимодействует с
 
 @enduml
+
 ```
 
 
