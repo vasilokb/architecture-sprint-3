@@ -72,11 +72,17 @@
 
 ### 2. Документация API
 
-**API для управления пользователями User Management API**
-[Скачать спецификацию API]([ссылка_на_файл.yaml](https://github.com/vasilokb/architecture-sprint-3/blob/sprint-3/docs/api/User-Management-API.yaml))
+[**REST API для сервиса Auth Service (Сервис авторизации)**](https://github.com/vasilokb/architecture-sprint-3/blob/sprint-3/docs/api/User-Management-API.yaml)
 
-**API для управления устройствами Device Management Service API**
-[Скачать спецификацию API](https://github.com/vasilokb/architecture-sprint-3/blob/sprint-3/docs/api/Device-Management-Service-API.yaml)
+[**REST API для сервиса  Device Management Service (Сервис управления устройствами)**](https://github.com/vasilokb/architecture-sprint-3/blob/sprint-3/docs/api/Device-Management-Service-API.yaml)
+
+[**REST API для сервиса  Telemetry Service (Сервис телеметрии)](https://github.com/vasilokb/architecture-sprint-3/blob/sprint-3/docs/api/Telemetry-Service-API.yaml)
+
+[**ASYNC API для сервиса  Telemetry Service (Сервис телеметрии)](https://github.com/vasilokb/architecture-sprint-3/blob/sprint-3/docs/api/Telemetry-Service-Async-API.yaml)
+
+[**REST API для сервиса  Notification Service (Сервис уведомлений)**](https://github.com/vasilokb/architecture-sprint-3/blob/sprint-3/docs/api/Notification-Service-API.yaml)
+
+[**ASYNC API для сервиса  Notification Service (Сервис уведомлений)**](https://github.com/vasilokb/architecture-sprint-3/blob/sprint-3/docs/api/Notification-Service-Async-API.yaml)
 
 # ✅ ❌ Задание 2. Новые микросервисы и интеграция с монолитом
 
