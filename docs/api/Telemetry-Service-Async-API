@@ -1,0 +1,27 @@
+asyncapi: 2.6.0
+info:
+  title: Telemetry Service Async API
+  description: Асинхронное API для передачи телеметрии
+  version: 1.0.0
+servers:
+  - url: kafka-broker:9092
+    protocol: kafka
+channels:
+  telemetry-data:
+    publish:
+      summary: Отправка телеметрических данных
+      message:
+        contentType: application/json
+        payload:
+          type: object
+          properties:
+            deviceId:
+              type: string
+              example: device_id
+            timestamp:
+              type: string
+              format: date-time
+              example: "2025-01-23T10:00:00Z"
+            value:
+              type: number
+              example: 42.5
