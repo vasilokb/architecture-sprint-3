@@ -1,0 +1,122 @@
+openapi: 3.0.3
+info:
+  title: Device Management Service API
+  description: API для управления устройствами
+  version: 1.0.0
+servers:
+  - url: https://api.example.com/devices
+paths:
+  /:
+    get:
+      summary: Получение списка устройств
+      responses:
+        '200':
+          description: Список устройств
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: device_id
+                    name:
+                      type: string
+                      example: Device Name
+                    status:
+                      type: string
+                      enum: [on, off]
+                      example: on
+    post:
+      summary: Добавление нового устройства
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Device Name
+                type:
+                  type: string
+                  example: Device Type
+      responses:
+        '201':
+          description: Устройство добавлено
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: new_device_id
+                  name:
+                    type: string
+                    example: Device Name
+                  type:
+                    type: string
+                    example: Device Type
+  /{deviceId}:
+    get:
+      summary: Получение информации об устройстве
+      parameters:
+        - name: deviceId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Информация об устройстве
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: device_id
+                  name:
+                    type: string
+                    example: Device Name
+                  status:
+                    type: string
+                    enum: [on, off]
+                    example: on
+    put:
+      summary: Обновление состояния устройства
+      parameters:
+        - name: deviceId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [on, off]
+      responses:
+        '200':
+          description: Устройство обновлено
+    delete:
+      summary: Удаление устройства
+      parameters:
+        - name: deviceId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Устройство удалено
