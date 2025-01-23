@@ -1,0 +1,84 @@
+openapi: 3.0.3
+info:
+  title: Notification Service API
+  description: API для управления шаблонами уведомлений и настройками
+  version: 1.0.0
+servers:
+  - url: https://api.example.com/notifications
+paths:
+  /templates:
+    get:
+      summary: Получение списка шаблонов уведомлений
+      responses:
+        '200':
+          description: Список шаблонов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: template_id
+                    name:
+                      type: string
+                      example: Template Name
+                    content:
+                      type: string
+                      example: "Your notification content"
+    post:
+      summary: Создание нового шаблона уведомления
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Template Name
+                content:
+                  type: string
+                  example: "Your notification content"
+      responses:
+        '201':
+          description: Шаблон создан
+  /preferences:
+    get:
+      summary: Получение настроек уведомлений пользователя
+      responses:
+        '200':
+          description: Настройки пользователя
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userId:
+                    type: string
+                    example: user_id
+                  preferences:
+                    type: object
+                    additionalProperties:
+                      type: string
+                      example: "email"
+    put:
+      summary: Обновление настроек уведомлений пользователя
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                preferences:
+                  type: object
+                  additionalProperties:
+                    type: string
+                    example: "sms"
+      responses:
+        '200':
+          description: Настройки обновлены
