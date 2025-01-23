@@ -1,0 +1,140 @@
+openapi: 3.0.3
+info:
+  title: User Management API
+  description: API для управления пользователями в системе.
+  version: 1.0.0
+paths:
+  /users:
+    get:
+      summary: Получение списка пользователей
+      description: Возвращает список всех пользователей в системе.
+      operationId: getUsers
+      responses:
+        '200':
+          description: Успешное получение списка пользователей.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '500':
+          description: Внутренняя ошибка сервера.
+    post:
+      summary: Создание нового пользователя
+      description: Добавляет нового пользователя в систему.
+      operationId: createUser
+      requestBody:
+        description: Данные для создания пользователя.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInput'
+      responses:
+        '201':
+          description: Пользователь успешно создан.
+        '400':
+          description: Неверные данные запроса.
+        '500':
+          description: Внутренняя ошибка сервера.
+  /users/{userId}:
+    get:
+      summary: Получение данных о пользователе
+      description: Возвращает информацию о пользователе по его ID.
+      operationId: getUserById
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: Уникальный идентификатор пользователя.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Успешное получение данных пользователя.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: Пользователь не найден.
+        '500':
+          description: Внутренняя ошибка сервера.
+    put:
+      summary: Обновление данных пользователя
+      description: Обновляет информацию о существующем пользователе.
+      operationId: updateUser
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: Уникальный идентификатор пользователя.
+          schema:
+            type: string
+      requestBody:
+        description: Данные для обновления пользователя.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInput'
+      responses:
+        '200':
+          description: Пользователь успешно обновлен.
+        '400':
+          description: Неверные данные запроса.
+        '404':
+          description: Пользователь не найден.
+        '500':
+          description: Внутренняя ошибка сервера.
+    delete:
+      summary: Удаление пользователя
+      description: Удаляет пользователя по его ID.
+      operationId: deleteUser
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: Уникальный идентификатор пользователя.
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Пользователь успешно удален.
+        '404':
+          description: Пользователь не найден.
+        '500':
+          description: Внутренняя ошибка сервера.
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Уникальный идентификатор пользователя.
+        name:
+          type: string
+          description: Имя пользователя.
+        email:
+          type: string
+          description: Электронная почта пользователя.
+        role:
+          type: string
+          description: Роль пользователя в системе (например, "admin" или "user").
+    UserInput:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Имя пользователя.
+        email:
+          type: string
+          description: Электронная почта пользователя.
+        role:
+          type: string
+          description: Роль пользователя в системе.
+      required:
+        - name
+        - email
