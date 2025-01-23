@@ -1,0 +1,26 @@
+asyncapi: 2.6.0
+info:
+  title: Notification Service Async API
+  description: Асинхронное API для отправки уведомлений
+  version: 1.0.0
+servers:
+  - url: kafka-broker:9092
+    protocol: kafka
+channels:
+  notification-sent:
+    publish:
+      summary: Отправка уведомления
+      message:
+        contentType: application/json
+        payload:
+          type: object
+          properties:
+            userId:
+              type: string
+              example: user_id
+            notificationType:
+              type: string
+              example: "email"
+            content:
+              type: string
+              example: "Your notification content"
